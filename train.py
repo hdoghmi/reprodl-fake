@@ -7,6 +7,7 @@ from torch.nn import functional as F
 
 import pytorch_lightning as pl
 from pytorch_lightning.metrics import functional
+
 from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -14,6 +15,9 @@ import pandas as pd
 import hydra
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig
+
+import logging
+logger = logging.getLogger(__name__)
 
 class ESC50Dataset(torch.utils.data.Dataset):
     # Simple class to load the desired folders inside ESC-50
@@ -56,7 +60,7 @@ class AudioNet(pl.LightningModule):
         super().__init__()
 
         self.save_hyperparameters(hparams)
-         
+
         self.conv1 = nn.Conv2d(1, hparams.base_filters, 11, padding=5)
         self.bn1 = nn.BatchNorm2d(hparams.base_filters)
         self.conv2 = nn.Conv2d(hparams.base_filters, hparams.base_filters, 3, padding=1)
@@ -106,6 +110,9 @@ class AudioNet(pl.LightningModule):
 
 @hydra.main(config_path='configs', config_name='default')
 def train(cfg: DictConfig):
+
+    logger.info(cfg)
+
     # We use folds 1,2,3 for training, 4 for validation, 5 for testing.
     path = Path(get_original_cwd()) / Path(cfg.data.path)
     train_data = ESC50Dataset(path = path, folds = cfg.data.train_folds)
