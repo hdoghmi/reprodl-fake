@@ -1,2 +1,4 @@
-data/
-.vscode/
+data/*
+.vscode/*
+lightning_logs/*
+outputs/*
