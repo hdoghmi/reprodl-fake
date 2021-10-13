@@ -59,6 +59,8 @@ class AudioNet(pl.LightningModule):
     def __init__(self, hparams: DictConfig):
         super().__init__()
 
+        #Fundamentaly, this will save the hyper-parameters
+        #in a way that is meaningful to Pytorch Lightning
         self.save_hyperparameters(hparams)
 
         self.conv1 = nn.Conv2d(1, hparams.base_filters, 11, padding=5)
